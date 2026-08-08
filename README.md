@@ -1,16 +1,49 @@
-## Hi there 👋
+# Привет, я akak1y 👋
 
-<!--
-**akak1y/akak1y** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Пишу на JavaScript, Python, С++, Lua. Люблю ООП и чистую архитектуру.  
+Строю системы с нуля — от игровых серверов до утилит и пет-проектов.
 
-Here are some ideas to get you started:
+---
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## 🧠 Что я знаю
+
+**Языки:** JavaScript / Node.js • Python • C++ • Lua  
+**Бэкенд:** MySQL + ORM, Redis, послойная архитектура, атомарные операции, профилирование  
+**Фронтенд:** Vue 3, HTML / CSS  
+**Практики:** ООП • SOLID • DRY • event-driven • CI (GitHub Actions)  
+**Инструменты:** Git, Vite, dependency-cruiser, VS Code
+
+---
+
+## 🚀 Проекты
+
+- **RAGEMP_server** — каркас игрового сервера: контроллеры → сервисы → модели,
+  Redis-кэширование, тюнинг транспорта, Vue 3 SPA, CI.
+  *Node.js • MySQL • Redis • Vue 3*
+
+- **ALLhelper-SAMP0.3.7** — Lua-скрипт для SAMP, с которого начал путь в геймдеве.
+  *Lua*
+
+- **DVD-screensaver** — ретро-скринсейвер, пет-проект для души.
+  *Python*
+
+---
+
+## 💡 Что я ценю в коде
+
+- Читаемость вместо «умности»
+- Архитектура вместо спагетти
+- Замеры вместо догадок (профилирование, логи, бенчмарки)
+
+---
+
+## 🎯 Цель
+
+Вырасти в уверенного специалиста и заниматься делом, которое затянет.  
+Открыт к интересным проектам и позициям: **backend, C++, game dev**.
+
+---
+
+## 📬 Связь
+
+Telegram: @ak4k1y • Discord: .ak4k1y • Email: gamer.all.games@list.ru
