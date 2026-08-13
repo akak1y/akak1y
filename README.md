@@ -8,8 +8,8 @@
 ## 🧠 Что я знаю
 
 **Языки:** JavaScript / Node.js • Python • C++ • Lua  
-**Бэкенд:** MySQL + ORM, Redis, послойная архитектура, атомарные операции, профилирование  
-**Фронтенд:** Vue 3, HTML / CSS  
+**Бэкенд:** MySQL + ORM, Redis, WebSocket, JWT, послойная архитектура, атомарные операции, профилирование  
+**Фронтенд:** Vue 3, HTML / CSS
 **Практики:** ООП • SOLID • DRY • event-driven • CI (GitHub Actions)  
 **Инструменты:** Git, Vite, dependency-cruiser, VS Code
 
@@ -18,8 +18,9 @@
 ## 🚀 Проекты
 
 - **RAGEMP_server** — каркас игрового сервера: контроллеры → сервисы → модели,
-  Redis-кэширование, тюнинг транспорта, Vue 3 SPA, CI.
-  *Node.js • MySQL • Redis • Vue 3*
+  Redis-кэширование, тюнинг транспорта, Vue 3 SPA,
+  real-time веб-админка (WebSocket + JWT + живая карта на Leaflet), CI.
+  *Node.js • MySQL • Redis • Vue 3 • WebSocket*
 
 - **ALLhelper-SAMP0.3.7** — Lua-скрипт для SAMP, с которого начал путь в геймдеве.
   *Lua*
