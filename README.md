@@ -9,7 +9,7 @@
 
 **Языки:** JavaScript / Node.js • Python • C++ • Lua  
 **Бэкенд:** MySQL + ORM, Redis, WebSocket, JWT, послойная архитектура, атомарные операции, профилирование  
-**Фронтенд:** Vue 3, HTML / CSS
+**Фронтенд:** Vue 3, HTML / CSS  
 **Практики:** ООП • SOLID • DRY • event-driven • CI (GitHub Actions)  
 **Инструменты:** Git, Vite, dependency-cruiser, VS Code
 
