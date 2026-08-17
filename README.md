@@ -15,13 +15,13 @@ with live Leaflet map, full CI pipeline.
 
 *Node.js • MySQL + Sequelize • Redis • Vue 3 • WebSocket • JWT • Jest • GitHub Actions*
 
-### [canvas-map-engine](https://github.com/akak1y/canvas-map-engine) *(in progress)*
-Lightweight canvas-based map rendering library for game admin panels.
-Tile caching, viewport culling, marker clustering, framework-agnostic.
+### [DVD-screensaver](https://github.com/akak1y/DVD-screensaver)
+Classic DVD screensaver: bounce physics, collision detection,
+per-pixel graphics processing, dynamic color changes.
 
-*TypeScript • Canvas API • npm package*
+*Python • Pygame • NumPy*
 
-### [ALLhelper-SAMP0.3.7](https://github.com/akak1y/ALLhelper-SAMP0.3.7)
+### [ALLhelper-SAMP0.3.7](https://github.com/akak1y/ALLhelper-SAMP.0.3.7)
 Where my game dev journey started — Lua scripting for SA-MP.
 
 *Lua*
