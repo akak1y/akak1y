@@ -1,50 +1,48 @@
-# Привет, я akak1y 👋
+# Hi, I'm akak1y 👋
 
-Пишу на JavaScript, Python, C++, Lua. Люблю ООП и чистую архитектуру.  
-Строю системы с нуля — от игровых серверов до утилит и пет-проектов.
-
----
-
-## 🧠 Что я знаю
-
-**Языки:** JavaScript / Node.js • Python • C++ • Lua  
-**Бэкенд:** MySQL + ORM, Redis, WebSocket, JWT, послойная архитектура, атомарные операции, профилирование  
-**Фронтенд:** Vue 3, HTML / CSS  
-**Практики:** ООП • SOLID • DRY • event-driven • CI (GitHub Actions)  
-**Инструменты:** Git, Vite, dependency-cruiser, VS Code
+Backend developer focused on **Node.js game servers** and **clean architecture**.
+I build systems from scratch — from database schema to real-time admin panels.
 
 ---
 
-## 🚀 Проекты
+## 🚀 Featured Projects
 
-- **RAGEMP_server** — каркас игрового сервера: контроллеры → сервисы → модели,
-  Redis-кэширование, тюнинг транспорта, Vue 3 SPA,
-  real-time веб-админка (WebSocket + JWT + живая карта на Leaflet), CI.
-  *Node.js • MySQL • Redis • Vue 3 • WebSocket*
+### [RAGEMP_server](https://github.com/akak1y/RAGEMP_server)
+Production-grade game server framework for RAGE Multiplayer (GTA V).
+Layered architecture (controllers → services → models), atomic SQL transactions,
+Redis caching with benchmarks, Vue 3 SPA client, real-time WebSocket admin panel
+with live Leaflet map, full CI pipeline.
 
-- **ALLhelper-SAMP0.3.7** — Lua-скрипт для SAMP, с которого начал путь в геймдеве.
-  *Lua*
+*Node.js • MySQL + Sequelize • Redis • Vue 3 • WebSocket • JWT • Jest • GitHub Actions*
 
-- **DVD-screensaver** — ретро-скринсейвер, пет-проект для души.
-  *Python*
+### [canvas-map-engine](https://github.com/akak1y/canvas-map-engine) *(in progress)*
+Lightweight canvas-based map rendering library for game admin panels.
+Tile caching, viewport culling, marker clustering, framework-agnostic.
 
----
+*TypeScript • Canvas API • npm package*
 
-## 💡 Что я ценю в коде
+### [ALLhelper-SAMP0.3.7](https://github.com/akak1y/ALLhelper-SAMP0.3.7)
+Where my game dev journey started — Lua scripting for SA-MP.
 
-- Читаемость вместо «умности»
-- Архитектура вместо спагетти
-- Замеры вместо догадок (профилирование, логи, бенчмарки)
-
----
-
-## 🎯 Цель
-
-Вырасти в уверенного специалиста и заниматься делом, которое затянет.  
-Открыт к интересным проектам и позициям: **backend, C++, game dev**.
+*Lua*
 
 ---
 
-## 📬 Связь
+## 🧰 Stack
 
-Telegram: @ak4k1y • Discord: .ak4k1y • Email: gamer.all.games@list.ru
+**Backend:** Node.js, MySQL + Sequelize, Redis, WebSocket, JWT  
+**Frontend:** Vue 3, TypeScript, Canvas API  
+**Practices:** SOLID, event-driven, atomic transactions, profiling, CI/CD  
+**Tools:** Git, Jest, GitHub Actions, Vite, dependency-cruiser
+
+---
+
+## 🎯 Looking for
+
+Backend / C++ / game dev positions where I can build systems that matter.
+
+---
+
+## 📬 Contact
+
+Telegram: [@ak4k1y](https://t.me/ak4k1y) • Discord: `.ak4k1y` • Email: gamer.all.games@list.ru
