@@ -38,6 +38,6 @@ C++17/SFML 2D platformer to practice tight game loops and proper release workflo
 
 ---
 
-## 📬 Contact
+## 📬 contact
 
 Telegram: [@ak4k1y](https://t.me/ak4k1y) • Discord: `.ak4k1y` • Email: `gamer.all.games@list.ru`
