@@ -1,48 +1,43 @@
-# Hi, I'm akak1y 👋
+# hey, i'm akak1y 👋
 
-Backend developer focused on **Node.js game servers** and **clean architecture**.
-I build systems from scratch — from database schema to real-time admin panels.
+backend engineer who follows interesting problems, not a fixed domain.
 
----
-
-## 🚀 Featured Projects
-
-### [RAGEMP_server](https://github.com/akak1y/RAGEMP_server)
-Production-grade game server framework for RAGE Multiplayer (GTA V).
-Layered architecture (controllers → services → models), atomic SQL transactions,
-Redis caching with benchmarks, Vue 3 SPA client, real-time WebSocket admin panel
-with live Leaflet map, full CI pipeline.
-
-*Node.js • MySQL + Sequelize • Redis • Vue 3 • WebSocket • JWT • Jest • GitHub Actions*
-
-### [DVD-screensaver](https://github.com/akak1y/DVD-screensaver)
-Classic DVD screensaver: bounce physics, collision detection,
-per-pixel graphics processing, dynamic color changes.
-
-*Python • Pygame • NumPy*
-
-### [ALLhelper-SAMP0.3.7](https://github.com/akak1y/ALLhelper-SAMP.0.3.7)
-Where my game dev journey started — Lua scripting for SA-MP.
-
-*Lua*
+the common thread is control: i like owning every layer of what i build. clean layered architecture where it scales, C++ where i want total command of memory and performance, and no black boxes in between.
 
 ---
 
-## 🧰 Stack
+## 🎮 projects
 
-**Backend:** Node.js, MySQL + Sequelize, Redis, WebSocket, JWT  
-**Frontend:** Vue 3, TypeScript, Canvas API  
-**Practices:** SOLID, event-driven, atomic transactions, profiling, CI/CD  
-**Tools:** Git, Jest, GitHub Actions, Vite, dependency-cruiser
+**[RAGEMP_server](https://github.com/akak1y/RAGEMP_server)** ![flagship](https://img.shields.io/badge/-flagship-blue) ![active](https://img.shields.io/badge/-active-brightgreen)
+production-grade GTA V RP server from scratch: layered `controllers → services → models` enforced by dependency-cruiser, atomic money transactions, real-time WebSocket admin panel with live map, >85% service coverage.
+
+**[CanvasMapper](https://github.com/akak1y/canvasmapper)** ![alpha soon](https://img.shields.io/badge/-alpha%20soon-orange)
+zero-dependency Canvas 2D map engine — Leaflet choked at 500 markers in my admin panel, so i wrote my own. pluggable tile sources, fps-independent easing, `:where()` CSS defaults any stylesheet can override.
+
+**[DVD-screensaver](https://github.com/akak1y/DVD-screensaver)** ![done](https://img.shields.io/badge/-done-purple) ![for fun](https://img.shields.io/badge/-for%20fun-ff69b4)
+the nostalgia toy: bouncing logo with per-pixel NumPy recoloring, waiting for that perfect corner hit.
 
 ---
 
-## 🎯 Looking for
+## 🔭 exploring
 
-Backend / C++ / game dev positions where I can build systems that matter.
+**[PhotoAtlas](https://github.com/akak1y/PhotoAtlas)** ![early stage](https://img.shields.io/badge/-early%20stage-blue)
+local-first Tauri 2 + Rust app: photo folder → interactive map. rayon-parallel EXIF parsing, sha256 thumbnail cache, zero network I/O.
+
+**platformer-engine** ![prototype](https://img.shields.io/badge/-prototype-yellow)
+C++17/SFML 2D platformer to practice tight game loops and proper release workflows.
+
+---
+
+## 🛠️ stack
+
+**languages:** JS/TS · Rust · Go · C++ · Python  
+**backend:** Node.js · Tauri · Redis · MySQL · SQLite  
+**frontend:** Vue 3 · React 18 · Canvas 2D · MapLibre · Vite  
+**quality:** Jest · Vitest · GitHub Actions · ESLint 9  
 
 ---
 
 ## 📬 Contact
 
-Telegram: [@ak4k1y](https://t.me/ak4k1y) • Discord: `.ak4k1y` • Email: gamer.all.games@list.ru
+Telegram: [@ak4k1y](https://t.me/ak4k1y) • Discord: `.ak4k1y` • Email: `gamer.all.games@list.ru`
