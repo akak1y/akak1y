@@ -24,7 +24,7 @@ the nostalgia toy: bouncing logo with per-pixel NumPy recoloring, waiting for th
 **[PhotoAtlas](https://github.com/akak1y/PhotoAtlas)** ![early stage](https://img.shields.io/badge/-early%20stage-blue)
 local-first Tauri 2 + Rust app: photo folder → interactive map. rayon-parallel EXIF parsing, sha256 thumbnail cache, zero network I/O.
 
-**platformer-engine** ![prototype](https://img.shields.io/badge/-prototype-yellow)
+**[platformer-engine](https://github.com/akak1y/platformer-engine)** ![prototype](https://img.shields.io/badge/-prototype-yellow)
 C++17/SFML 2D platformer to practice tight game loops and proper release workflows.
 
 ---
