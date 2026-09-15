@@ -1,5 +1,7 @@
 # hey, i'm akak1y 👋
 
+[![portfolio](https://img.shields.io/badge/portfolio-RU%20%2F%20EN-blue)](https://akak1y.github.io/akak1y/)
+
 backend engineer who follows interesting problems, not a fixed domain.
 
 the common thread is control: i like owning every layer of what i build. clean layered architecture where it scales, C++ where i want total command of memory and performance, and no black boxes in between.
@@ -38,4 +40,4 @@ local-first Tauri 2 + Rust app: photo folder → interactive map. rayon-parallel
 
 ## 📬 contact
 
-Telegram: [@ak4k1y](https://t.me/ak4k1y) • Discord: `.ak4k1y` • Email: `gamer.all.games@list.ru`
+[Portfolio](https://akak1y.github.io/akak1y/) (RU / EN) · Telegram: [@ak4k1y](https://t.me/ak4k1y) • Discord: `.ak4k1y` • Email: `gamer.all.games@list.ru`
