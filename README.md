@@ -32,7 +32,7 @@ local-first Tauri 2 + Rust app: photo folder → interactive map. rayon-parallel
 **languages:** JS/TS · C++ · Python  
 **backend:** Node.js · Redis · MySQL · SQLite  
 **frontend:** Vue 3 · React 18 · Canvas 2D · MapLibre · Vite  
-**quality:** Jest · Vitest · GitHub Actions · ESLint 9  
+**quality:** Jest · Vitest · GitHub Actions · ESLint 9
 
 ---
 
