@@ -7,7 +7,7 @@ backend engineer who follows interesting problems, not a fixed domain.
 the common thread is control: i like owning every layer of what i build. clean layered architecture where it scales, C++ where i want total command of memory and performance, and no black boxes in between.
 
 <!-- LAST_ACTIVITY_BADGE_START -->
-![Последняя активность](https://img.shields.io/badge/status-waiting%20for%20first%20scan-lightgrey)
+![last activity](https://img.shields.io/github/last-commit/akak1y/RAGEMP_server?label=last%20activity%20in%20akak1y%2FRAGEMP_server&color=0e75b6)
 <!-- LAST_ACTIVITY_BADGE_END -->
 
 ---
