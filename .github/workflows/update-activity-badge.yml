@@ -1,0 +1,172 @@
+name: Update public activity badge
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: public-activity-badge
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create state file if missing
+        run: |
+          mkdir -p .github
+          if [ ! -f .github/activity-state.json ]; then
+            cat > .github/activity-state.json <<'JSON'
+          {
+            "last_update": "1970-01-01T00:00:00Z",
+            "latest_repo": "",
+            "latest_pushed_at": "1970-01-01T00:00:00Z"
+          }
+          JSON
+          fi
+
+      - name: Scan public repositories with 4h cooldown
+        id: scan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+
+          to_epoch() {
+            date -u -d "$1" +%s
+          }
+
+          NOW_ISO=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          NOW=$(date -u +%s)
+
+          LAST_UPDATE=$(jq -r '.last_update // "1970-01-01T00:00:00Z"' .github/activity-state.json)
+          LAST_UPDATE_EPOCH=$(to_epoch "$LAST_UPDATE")
+
+          COOLDOWN_SECONDS=14400
+
+          if [ $((NOW - LAST_UPDATE_EPOCH)) -lt "$COOLDOWN_SECONDS" ]; then
+            echo "Cooldown is active. Skipping public repository scan."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          REPOS_JSON=$(gh api "users/$USERNAME/repos?sort=pushed&direction=desc&per_page=100")
+
+          LATEST_LINE=$(printf '%s' "$REPOS_JSON" | jq -r --arg me "$USERNAME" '
+            [ .[]
+              | select(
+                  .fork == false and
+                  .private == false and
+                  .name != $me and
+                  .pushed_at != null
+                )
+            ]
+            | .[0] // {}
+            | "\(.full_name // "")\t\(.pushed_at // "")"
+          ')
+
+          LATEST_REPO=${LATEST_LINE%%$'\t'*}
+          LATEST_PUSHED_AT=${LATEST_LINE#*$'\t'}
+
+          if [ -z "$LATEST_REPO" ] || [ -z "$LATEST_PUSHED_AT" ]; then
+            echo "No suitable public repository found."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          STATE_PUSHED_AT=$(jq -r '.latest_pushed_at // "1970-01-01T00:00:00Z"' .github/activity-state.json)
+
+          LATEST_PUSHED_EPOCH=$(to_epoch "$LATEST_PUSHED_AT")
+          STATE_PUSHED_EPOCH=$(to_epoch "$STATE_PUSHED_AT")
+
+          if [ "$LATEST_PUSHED_EPOCH" -le "$STATE_PUSHED_EPOCH" ]; then
+            echo "No new public activity since last recorded state."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "latest_repo=$LATEST_REPO" >> "$GITHUB_OUTPUT"
+          echo "latest_pushed_at=$LATEST_PUSHED_AT" >> "$GITHUB_OUTPUT"
+          echo "now_iso=$NOW_ISO" >> "$GITHUB_OUTPUT"
+
+      - name: Update README and state
+        if: steps.scan.outputs.skip != 'true'
+        env:
+          LATEST_REPO: ${{ steps.scan.outputs.latest_repo }}
+          LATEST_PUSHED_AT: ${{ steps.scan.outputs.latest_pushed_at }}
+          NOW_ISO: ${{ steps.scan.outputs.now_iso }}
+        run: |
+          set -euo pipefail
+
+          python3 - <<'PY'
+          import os
+          import re
+          from urllib.parse import quote
+
+          repo = os.environ["LATEST_REPO"]
+
+          label = quote(f"last activity in {repo}", safe="")
+
+          badge = (
+              f"![last activity]"
+              f"(https://img.shields.io/github/last-commit/{repo}"
+              f"?label={label}&color=0e75b6)"
+          )
+
+          readme_path = "README.md"
+          start = "<!-- LAST_ACTIVITY_BADGE_START -->"
+          end = "<!-- LAST_ACTIVITY_BADGE_END -->"
+
+          with open(readme_path, "r", encoding="utf-8") as f:
+              text = f.read()
+
+          if start not in text or end not in text:
+              raise SystemExit("Badge markers were not found in README.md")
+
+          pattern = re.compile(re.escape(start) + r".*?" + re.escape(end), re.DOTALL)
+          replacement = f"{start}\n{badge}\n{end}"
+
+          new_text, count = pattern.subn(replacement, text, count=1)
+
+          if count != 1:
+              raise SystemExit("Failed to replace badge block")
+
+          with open(readme_path, "w", encoding="utf-8") as f:
+              f.write(new_text)
+          PY
+
+          jq -n \
+            --arg last_update "$NOW_ISO" \
+            --arg latest_repo "$LATEST_REPO" \
+            --arg latest_pushed_at "$LATEST_PUSHED_AT" \
+            '{
+              last_update: $last_update,
+              latest_repo: $latest_repo,
+              latest_pushed_at: $latest_pushed_at
+            }' > .github/activity-state.json
+
+      - name: Commit changes if any
+        if: steps.scan.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+
+          if [ -z "$(git status --porcelain -- README.md .github/activity-state.json)" ]; then
+            echo "No file changes. Nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md .github/activity-state.json
+          git commit -m "chore: update public activity badge"
+          git push origin "HEAD:${{ github.ref_name }}"
