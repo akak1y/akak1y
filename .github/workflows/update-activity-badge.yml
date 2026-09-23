@@ -108,40 +108,72 @@ jobs:
           set -euo pipefail
 
           python3 - <<'PY'
-          import os
-          import re
+          import os, re
+          from datetime import datetime
           from urllib.parse import quote
+          try:
+              from zoneinfo import ZoneInfo
+          except ImportError:
+              ZoneInfo = None
 
-          repo = os.environ["LATEST_REPO"]
+          # ================= НАСТРОЙКИ ВНЕШНЕГО ВИДА =================
+          VALUE_COLOR = "7c3aed"     # правый сегмент: фиолетовый (яркий + читаемый)
+          LABEL_COLOR = "1f2937"     # левый сегмент: тёмный графит
+          STYLE       = "flat-square"# плоский современный вид
+          TZ_NAME     = "Europe/Moscow"  # часовой пояс для даты
+          DATE_FMT    = "%d.%m.%Y %H:%M %Z"  # 23.09.2026 17:32 MSK
+          PREFIX      = "Последняя активность в"
+          # Альтернативные VALUE_COLOR: 4f46e5 (индиго), be123c (малиновый),
+          # 2563eb (синий), c026d3 (фуксия). НЕ бери светлые (жёлтый/лайм) —
+          # белый текст на них не читается, а цвет текста в static badge не менятся.
+          # ===========================================================
 
-          label = quote(f"last activity in {repo}", safe="")
+          repo   = os.environ["LATEST_REPO"]
+          pushed = os.environ["LATEST_PUSHED_AT"]  # ISO из GitHub API
 
-          badge = (
-              f"![last activity]"
-              f"(https://img.shields.io/github/last-commit/{repo}"
-              f"?label={label}&color=0e75b6)"
+          # Точная дата+время последней активности в нужной зоне
+          dt = datetime.fromisoformat(pushed.replace("Z", "+00:00"))
+          if ZoneInfo is not None:
+              try:
+                  dt = dt.astimezone(ZoneInfo(TZ_NAME))
+              except Exception:
+                  pass
+          date_str = dt.strftime(DATE_FMT)
+
+          def shield_escape(s: str) -> str:
+              # В static badge shields трактует '-' и '_' specially:
+              # одиночный '-' = разделитель сегментов, '_' = пробел.
+              # Экранируем их удвоением, остальное (пробелы, кириллица, '/')
+              # процент-кодируем — shields корректно декодирует обратно.
+              s = s.replace("-", "--").replace("_", "__")
+              return quote(s, safe="")
+
+          label   = shield_escape(f"{PREFIX} {repo}")
+          message = shield_escape(date_str)
+
+          url = (
+              f"https://img.shields.io/badge/{label}-{message}-{VALUE_COLOR}"
+              f"?labelColor={LABEL_COLOR}&style={STYLE}"
           )
+          badge = f"![Последняя активность]({url})"
 
           readme_path = "README.md"
           start = "<!-- LAST_ACTIVITY_BADGE_START -->"
-          end = "<!-- LAST_ACTIVITY_BADGE_END -->"
+          end   = "<!-- LAST_ACTIVITY_BADGE_END -->"
 
           with open(readme_path, "r", encoding="utf-8") as f:
               text = f.read()
-
           if start not in text or end not in text:
               raise SystemExit("Badge markers were not found in README.md")
 
           pattern = re.compile(re.escape(start) + r".*?" + re.escape(end), re.DOTALL)
-          replacement = f"{start}\n{badge}\n{end}"
-
-          new_text, count = pattern.subn(replacement, text, count=1)
-
+          new_text, count = pattern.subn(f"{start}\n{badge}\n{end}", text, count=1)
           if count != 1:
               raise SystemExit("Failed to replace badge block")
 
           with open(readme_path, "w", encoding="utf-8") as f:
               f.write(new_text)
+          print("New badge:", badge)
           PY
 
           jq -n \
