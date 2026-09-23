@@ -37,23 +37,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
 
-          to_epoch() {
-            date -u -d "$1" +%s
-          }
+          to_epoch() { date -u -d "$1" +%s; }
 
           NOW_ISO=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           NOW=$(date -u +%s)
 
+          FORCE=false
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then FORCE=true; fi
+
           LAST_UPDATE=$(jq -r '.last_update // "1970-01-01T00:00:00Z"' .github/activity-state.json)
           LAST_UPDATE_EPOCH=$(to_epoch "$LAST_UPDATE")
+          COOLDOWN_SECONDS=14400   # 4 часа
 
-          COOLDOWN_SECONDS=14400
-
-          if [ $((NOW - LAST_UPDATE_EPOCH)) -lt "$COOLDOWN_SECONDS" ]; then
-            echo "Cooldown is active. Skipping public repository scan."
+          if [ "$FORCE" != true ] && [ $((NOW - LAST_UPDATE_EPOCH)) -lt "$COOLDOWN_SECONDS" ]; then
+            echo "Cooldown active. Skipping scan."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -83,12 +84,11 @@ jobs:
           fi
 
           STATE_PUSHED_AT=$(jq -r '.latest_pushed_at // "1970-01-01T00:00:00Z"' .github/activity-state.json)
-
           LATEST_PUSHED_EPOCH=$(to_epoch "$LATEST_PUSHED_AT")
           STATE_PUSHED_EPOCH=$(to_epoch "$STATE_PUSHED_AT")
 
-          if [ "$LATEST_PUSHED_EPOCH" -le "$STATE_PUSHED_EPOCH" ]; then
-            echo "No new public activity since last recorded state."
+          if [ "$FORCE" != true ] && [ "$LATEST_PUSHED_EPOCH" -le "$STATE_PUSHED_EPOCH" ]; then
+            echo "No new public activity since last state."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -116,46 +116,46 @@ jobs:
           except ImportError:
               ZoneInfo = None
 
-          # ================= НАСТРОЙКИ ВНЕШНЕГО ВИДА =================
-          VALUE_COLOR = "7c3aed"     # правый сегмент: фиолетовый (яркий + читаемый)
-          LABEL_COLOR = "1f2937"     # левый сегмент: тёмный графит
-          STYLE       = "flat-square"# плоский современный вид
-          TZ_NAME     = "Europe/Moscow"  # часовой пояс для даты
-          DATE_FMT    = "%d.%m.%Y %H:%M %Z"  # 23.09.2026 17:32 MSK
-          PREFIX      = "Последняя активность в"
-          # Альтернативные VALUE_COLOR: 4f46e5 (индиго), be123c (малиновый),
-          # 2563eb (синий), c026d3 (фуксия). НЕ бери светлые (жёлтый/лайм) —
-          # белый текст на них не читается, а цвет текста в static badge не менятся.
-          # ===========================================================
+          SIGNATURE = "last activity"
+          SIGNATURE_STYLE= "text"
+          SIGNATURE_GAP  = " "
+          SIGNATURE_COLOR= "374151"
+
+          VALUE_COLOR = "7c3aed"
+          LABEL_COLOR = "1f2937"
+          STYLE = "flat-square"
+          TZ_NAME = "Europe/Moscow"
+          DATE_FMT = "%d.%m.%Y %H:%M %Z"
 
           repo   = os.environ["LATEST_REPO"]
-          pushed = os.environ["LATEST_PUSHED_AT"]  # ISO из GitHub API
+          pushed = os.environ["LATEST_PUSHED_AT"]
 
-          # Точная дата+время последней активности в нужной зоне
           dt = datetime.fromisoformat(pushed.replace("Z", "+00:00"))
           if ZoneInfo is not None:
-              try:
-                  dt = dt.astimezone(ZoneInfo(TZ_NAME))
-              except Exception:
-                  pass
+              try: dt = dt.astimezone(ZoneInfo(TZ_NAME))
+              except Exception: pass
           date_str = dt.strftime(DATE_FMT)
 
-          def shield_escape(s: str) -> str:
-              # В static badge shields трактует '-' и '_' specially:
-              # одиночный '-' = разделитель сегментов, '_' = пробел.
-              # Экранируем их удвоением, остальное (пробелы, кириллица, '/')
-              # процент-кодируем — shields корректно декодирует обратно.
-              s = s.replace("-", "--").replace("_", "__")
-              return quote(s, safe="")
+          def esc(s: str) -> str:
+              return quote(s.replace("-", "--").replace("_", "__"), safe="")
 
-          label   = shield_escape(f"{PREFIX} {repo}")
-          message = shield_escape(date_str)
-
-          url = (
+          label   = esc(repo)
+          message = esc(date_str)
+          badge_url = (
               f"https://img.shields.io/badge/{label}-{message}-{VALUE_COLOR}"
               f"?labelColor={LABEL_COLOR}&style={STYLE}"
           )
-          badge = f"![Последняя активность]({url})"
+
+          sig = esc(SIGNATURE)
+          if SIGNATURE_STYLE == "code":
+              prefix = f"`{SIGNATURE}`"
+          elif SIGNATURE_STYLE == "badge":
+              sig_url = f"https://img.shields.io/badge/{sig}-{SIGNATURE_COLOR}?style={STYLE}"
+              prefix = f"![{SIGNATURE}]({sig_url})"
+          else:  # text
+              prefix = SIGNATURE
+
+          line = f"{prefix}{SIGNATURE_GAP}![last activity]({badge_url})"
 
           readme_path = "README.md"
           start = "<!-- LAST_ACTIVITY_BADGE_START -->"
@@ -167,38 +167,31 @@ jobs:
               raise SystemExit("Badge markers were not found in README.md")
 
           pattern = re.compile(re.escape(start) + r".*?" + re.escape(end), re.DOTALL)
-          new_text, count = pattern.subn(f"{start}\n{badge}\n{end}", text, count=1)
+          new_text, count = pattern.subn(f"{start}\n{line}\n{end}", text, count=1)
           if count != 1:
               raise SystemExit("Failed to replace badge block")
 
           with open(readme_path, "w", encoding="utf-8") as f:
               f.write(new_text)
-          print("New badge:", badge)
+          print("New line:", line)
           PY
 
           jq -n \
             --arg last_update "$NOW_ISO" \
             --arg latest_repo "$LATEST_REPO" \
             --arg latest_pushed_at "$LATEST_PUSHED_AT" \
-            '{
-              last_update: $last_update,
-              latest_repo: $latest_repo,
-              latest_pushed_at: $latest_pushed_at
-            }' > .github/activity-state.json
+            '{ last_update: $last_update, latest_repo: $latest_repo, latest_pushed_at: $latest_pushed_at }' \
+            > .github/activity-state.json
 
       - name: Commit changes if any
         if: steps.scan.outputs.skip != 'true'
         run: |
           set -euo pipefail
-
           if [ -z "$(git status --porcelain -- README.md .github/activity-state.json)" ]; then
-            echo "No file changes. Nothing to commit."
-            exit 0
+            echo "No file changes."; exit 0
           fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add README.md .github/activity-state.json
           git commit -m "chore: update public activity badge"
           git push origin "HEAD:${{ github.ref_name }}"
