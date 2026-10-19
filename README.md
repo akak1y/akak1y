@@ -21,6 +21,10 @@ production-grade GTA V RP server from scratch: layered `controllers → services
 
  [![CI](https://github.com/akak1y/canvasmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/akak1y/canvasmapper/actions/workflows/ci.yml) [![demo](https://img.shields.io/badge/demo-live-06d6a0)](https://akak1y.github.io/canvasmapper/) [![npm downloads](https://img.shields.io/npm/dm/canvasmapper.svg)](https://www.npmjs.com/package/canvasmapper)
 
+ [faultguard](https://github.com/akak1y/faultguard) [![npm](https://img.shields.io/npm/v/faultguard.svg)](https://www.npmjs.com/package/faultguard) fault-tolerant async primitives for JS/TS — I kept hand-rolling retry/backoff/timeout loops across my RAGE MP server and its admin panel, each slightly different, so I consolidated them into one tested set. six composable primitives (`retry`, `timeout`, `circuitBreaker`, `pool`, `semaphore`, `compose()`), zero dependencies, < 5 KB, AbortController-native real cancellation.
+
+[![CI](https://github.com/akak1y/faultguard/actions/workflows/ci.yml/badge.svg)](https://github.com/akak1y/faultguard/actions/workflows/ci.yml) [![npm downloads](https://img.shields.io/npm/dm/faultguard.svg)](https://www.npmjs.com/package/faultguard)
+
 **[DVD-screensaver](https://github.com/akak1y/DVD-screensaver)** ![done](https://img.shields.io/badge/-done-purple) ![for fun](https://img.shields.io/badge/-for%20fun-ff69b4)
 the nostalgia toy: bouncing logo with per-pixel NumPy recoloring, waiting for that perfect corner hit.
 
