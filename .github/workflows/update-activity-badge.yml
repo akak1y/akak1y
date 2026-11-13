@@ -2,7 +2,7 @@ name: Update public activity badge
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
           JSON
           fi
 
-      - name: Scan public repositories with 4h cooldown
+      - name: Scan MY public pushes with 4h cooldown
         id: scan
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -59,26 +59,27 @@ jobs:
             exit 0
           fi
 
-          REPOS_JSON=$(gh api "users/$USERNAME/repos?sort=pushed&direction=desc&per_page=100")
+          ALLOW=$(gh api "users/$USERNAME/repos?per_page=100" | jq -r --arg me "$USERNAME" '
+            [ .[] | select(.fork == false and .private == false and .name != $me) | .full_name ]
+          ')
 
-          LATEST_LINE=$(printf '%s' "$REPOS_JSON" | jq -r --arg me "$USERNAME" '
+          EVENTS=$(gh api "users/$USERNAME/events?per_page=100")
+
+          LATEST_LINE=$(printf '%s' "$EVENTS" | jq -r --argjson allow "$ALLOW" '
             [ .[]
-              | select(
-                  .fork == false and
-                  .private == false and
-                  .name != $me and
-                  .pushed_at != null
-                )
+              | select(.type == "PushEvent")
+              | select(.repo.name as $r | ($allow | index($r)) != null)
             ]
+            | sort_by(.created_at) | reverse
             | .[0] // {}
-            | "\(.full_name // "")\t\(.pushed_at // "")"
+            | "\(.repo.name // "")\t\(.created_at // "")"
           ')
 
           LATEST_REPO=${LATEST_LINE%%$'\t'*}
           LATEST_PUSHED_AT=${LATEST_LINE#*$'\t'}
 
           if [ -z "$LATEST_REPO" ] || [ -z "$LATEST_PUSHED_AT" ]; then
-            echo "No suitable public repository found."
+            echo "No public push activity by THIS account found."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -88,7 +89,7 @@ jobs:
           STATE_PUSHED_EPOCH=$(to_epoch "$STATE_PUSHED_AT")
 
           if [ "$FORCE" != true ] && [ "$LATEST_PUSHED_EPOCH" -le "$STATE_PUSHED_EPOCH" ]; then
-            echo "No new public activity since last state."
+            echo "No new push by me since last state."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -152,7 +153,7 @@ jobs:
           elif SIGNATURE_STYLE == "badge":
               sig_url = f"https://img.shields.io/badge/{sig}-{SIGNATURE_COLOR}?style={STYLE}"
               prefix = f"![{SIGNATURE}]({sig_url})"
-          else:  # text
+          else:
               prefix = SIGNATURE
 
           line = f"{prefix}{SIGNATURE_GAP}![last activity]({badge_url})"
